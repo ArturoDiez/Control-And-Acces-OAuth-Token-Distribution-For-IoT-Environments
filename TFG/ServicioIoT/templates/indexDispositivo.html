@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{{ GrupoDispositivo.nombre }}</title>
+
+		<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="{% static 'todo/bs/css/flatly.min.css' %}" />
+		<link rel="stylesheet" href="{% static 'todo/styles.css' %}" />
+	</head>
+	<body>
+
+		<div class="container-fluid" id="wrapper">
+
+			<div class="row">
+				<div class="col-lg-4 col-lg-offset-4" id="content">
+					<h2>Añada o seleccione un dispositivo</h2>
+
+					{% if GrupoDispositivo %}
+					<form action="{% url 'addDispositivo' GrupoDispositivo.id %}" method="POST" role="form">
+						{% csrf_token %}
+						<div class="form-group">
+							<div class="input-group">
+							  {{ form.nombre }}
+								{{ form.descripcion }}
+							  <span class="input-group-btn">
+								  <button type="submit" class="btn btn-default" id="add-btn">ADD</button>
+							  </span>
+							</div>
+						</div>
+					</form>
+					{% endif %}
+
+
+					<ul class="list-group t20">
+						{% for Dispositivo in Dispositivo_list %}
+						   {% if GrupoDispositivo.id == Dispositivo.grupo.id %}
+							 <li class="list-group-item"><a href="{% url 'pedirToken' GrupoDispositivo.id Dispositivo.id  %}">{{ Dispositivo.nombre }}</a></li>
+							 {% endif %}
+						{% endfor %}
+					</ul>
+
+					<h2>Borre el grupo</h2>
+					{% if GrupoDispositivo %}
+					<div class="row t10">
+						<div class="col-lg-12">
+							<div class="btn-toolbar">
+								<div class="btn-group">
+									<a href="{% url 'deleteGrupo' GrupoDispositivo.id %}"><button type="button" class="btn btn-warning">
+										<i class="glyphicon glyphicon-trash"></i> DELETE
+									</button></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+
+			<footer>
+				<div class="row pad">
+					<div class="col-lg-12 text-center">
+						IoT device management service
+						<div class="abajo">
+							<button type="button" class="btn btn-default" onClick="javascript:history.go(-1);"/>Atrás
+						</div>
+						<div class="abajo">
+							<a href="{% url 'logout' %}" style="color:#ffffff"><button type="button" class="btn btn-default"/>Logout</a>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>
