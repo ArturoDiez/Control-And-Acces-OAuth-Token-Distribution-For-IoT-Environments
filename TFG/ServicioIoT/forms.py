@@ -1,8 +1,16 @@
 from django import forms
 
-from .models import GrupoDispositivo, Dispositivo
+from .models import GrupoDispositivo, Dispositivo, extraData
 
 #aria-label: ayuda a saber que es, pero no aparece en la web
+
+class extraDataForm(forms.Form):
+        client_id = forms.CharField(max_length=100,
+            widget=forms.TextInput(
+               attrs={'class' : 'form-control', 'placeholder' : 'ID Cliente', 'aria-label' : 'extraData', 'aria-describedby' : 'add-btn'}))
+        client_secret = forms.CharField(max_length=100,
+            widget=forms.TextInput(
+                attrs={'class' : 'form-control', 'placeholder' : 'Secreto de Cliente', 'aria-label' : 'extraData', 'aria-describedby' : 'add-btn'}))
 
 class GrupoDispositivoForm(forms.Form):
     nombre = forms.CharField(max_length=40,
@@ -18,5 +26,3 @@ class DispositivoForm(forms.Form):
            attrs={'class' : 'form-control', 'placeholder' : 'Descripcion del Dispositivo', 'aria-label' : 'Dispositivo', 'aria-describedby' : 'add-btn'}))
     grupo = forms.CharField(widget=forms.HiddenInput())
     propietario = forms.CharField(widget=forms.HiddenInput())
-    # authorizationCode= forms.CharField(widget=forms.HiddenInput())
-    # accesToken = forms.CharField(widget=forms.HiddenInput())
