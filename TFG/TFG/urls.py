@@ -22,7 +22,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', LoginView.as_view(), name = 'login'),
-    path('api/', include('ServicioIoT.urls'), name = 'api'),
+    path('app/', include('ServicioIoT.urls'), name = 'api'),
     path('logout',LogoutView.as_view(),{'next_page': settings.LOGOUT_REDIRECT_URL}, name = 'logout'),
     path('api-auth/', include('rest_framework.urls'))
 ]

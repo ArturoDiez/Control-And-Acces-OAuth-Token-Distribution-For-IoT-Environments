@@ -4,65 +4,32 @@ from django.shortcuts import render, redirect
 from .models import Dispositivo, GrupoDispositivo, extraData
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from oauthlib.oauth2 import WebApplicationClient
 from django.views.decorators.http import require_POST
 from .forms import GrupoDispositivoForm, DispositivoForm, extraDataForm
 from django.http import HttpResponse, HttpRequest
 import requests
+from requests.auth import HTTPBasicAuth
+from requests_oauthlib import OAuth2Session
+import base64
 
 oauth = OAuth()
 
 os.environ.setdefault('AUTHLIB_INSECURE_TRANSPORT', '1')
 
-REDIRECT_URI = 'http://127.0.0.1:8000/callback'
-
-auth0 = oauth.register(
-    'token acceso',
-    client_id='0',
-    client_secret='0',
-    api_base_url='http://127.0.0.1:5000',
-    access_token_url='http://127.0.0.1:5000/oauth/token',
-    authorize_url='http://127.0.0.1:5000/oauth/authorize',
-    client_kwargs={
-        'scope': 'read',
-    },
-)
-
-#@login_required
-#def extraData(request):
-#    usuario = request.user
-#
-#    form = extraDataForm()
-#
-#    context = {'form' : form, 'usuario': usuario}
-#
-#    return render(request, 'extraData.html', context)
-
-
-#@require_POST
-#@login_required
-#def addExtraData(request):
-#    form = extraDataForm(request.POST)
-#
-#    new_data = extraData()
-#
-#    new_data.client_id = request.POST['client_id']
-#    new_data.client_secret = request.POST['client_secret']
-#    new_data.save()
-#    return redirect('extraData.html')
-
 @login_required
-def pedirToken(request):
+def pedirCode(request):
     user_now = request.user
 
     usuario = extraData.objects.get(userid=user_now.id)
 
-    auth0.client_id = usuario.client_id
-    auth0.client_secret = usuario.client_secret
     #Pasando datos al server para recibir el codigo
-    #parametros = {'client_id':,'redirect_uri': 'http://127.0.0.1:8000/api/','response_type':'token'}
-    #r = requests.get('http://localhost:8081/oauth/authorize?', params = parametros)
+    #s = OAuth2Session(client_id=usuario.client_id, redirect_uri='http://127.0.0.1:8000/app/callback', scope='read')
+    #auth_url, state = s.authorization_url('http://localhost:8080/web/authorize?')
+    parametros = {'response_type':'code','client_id':usuario.client_id,'redirect_uri': 'http://127.0.0.1:8000/app/callback','scope':'read'}
+    r = requests.post('http://localhost:8080/web/authorize?', params = parametros)
 
-    return auth0.authorize_redirect(request,redirect_uri=REDIRECT_URI)
+    return redirect(r.url)
 
 @login_required
 def callback(request):
@@ -70,16 +37,40 @@ def callback(request):
 
     usuario = extraData.objects.get(userid=user_now.id)
 
-    token = auth0.authorize_acces_token()
+    c_s = usuario.client_secret
+    c_id = usuario.client_id
+
+    code = request.GET.get('code','')
+
+
+    if code != '':
+
+        print(code)
+        usuario.code = code
+        usuario.save()
+
+        #client= WebApplicationClient(c_id,code=code,)
+        #client.prepare_request_body(redirect_uri='http://127.0.0.1:8000/app/callback',include_client_id=True)
+        #state = restore_previous_state()
+        #auth= HTTPBasicAuth(c_id,c_s)
+        s = OAuth2Session(client_id=c_id,redirect_uri='http://127.0.0.1:8000/app/callback', scope='read')
+        token = s.fetch_token(token_url='http://localhost:8080/v1/oauth/tokens?', client_secret=c_s,authorization_response=request.build_absolute_uri())
+        #a = '%s:%s' % (c_id,c_s)
+        #b= a.encode("utf-8")
+        #c = base64.b64encode(b)
+        #print(c)
+        #headers = {'Authorization':'Basic %s' % c}
+        #parametros = {'&grant_type=authorization_code&code'+code+'=&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapp%2Fcallback'}
+        #auth = (c_id,c_s)
+        #url = 'http://localhost:8080/v1/oauth/tokens?&grant_type=authorization_code&code'+code+'=&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapp%2Fcallback'
+        #r = requests.post(url, auth = auth)
+
+        #token = request.GET.get('token','')
 
     print(token)
-    usuario.token = token
+
+    usuario.token = token['access_token']
     usuario.save()
+    a= usuario.token
 
-    GrupoDispositivo_list = GrupoDispositivo.objects.order_by('id')
-
-    form = GrupoDispositivoForm()
-
-    context = {'GrupoDispositivo_list' : GrupoDispositivo_list, 'form' : form, 'usuario': usuario}
-
-    return render(request, 'index.html', context)
+    return redirect('index')
