@@ -9,9 +9,7 @@ from django.views.decorators.http import require_POST
 from .forms import GrupoDispositivoForm, DispositivoForm, extraDataForm
 from django.http import HttpResponse, HttpRequest
 import requests
-from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth2Session
-import base64
 
 oauth = OAuth()
 
@@ -49,19 +47,9 @@ def callback(request):
         usuario.code = code
         usuario.save()
 
-        #client= WebApplicationClient(c_id,code=code,)
-        #client.prepare_request_body(redirect_uri='http://127.0.0.1:8000/app/callback',include_client_id=True)
-        #state = restore_previous_state()
-        #auth= HTTPBasicAuth(c_id,c_s)
         s = OAuth2Session(client_id=c_id,redirect_uri='http://127.0.0.1:8000/app/callback', scope='read')
         token = s.fetch_token(token_url='http://localhost:8080/v1/oauth/tokens?', client_secret=c_s,authorization_response=request.build_absolute_uri())
-        #a = '%s:%s' % (c_id,c_s)
-        #b= a.encode("utf-8")
-        #c = base64.b64encode(b)
-        #print(c)
-        #headers = {'Authorization':'Basic %s' % c}
         #parametros = {'&grant_type=authorization_code&code'+code+'=&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapp%2Fcallback'}
-        #auth = (c_id,c_s)
         #url = 'http://localhost:8080/v1/oauth/tokens?&grant_type=authorization_code&code'+code+'=&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapp%2Fcallback'
         #r = requests.post(url, auth = auth)
 
