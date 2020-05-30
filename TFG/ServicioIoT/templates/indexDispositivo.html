@@ -18,9 +18,10 @@
 		<div class="container-fluid" id="wrapper">
 
 			<div class="row">
+				{% if Dispositivo %}
 				<div class="col-lg-4 col-lg-offset-4" id="content">
 					<h2>Borre el Dispositivo</h2>
-					{% if Dispositivo %}
+
 					<div class="row t10">
 						<div class="col-lg-12">
 							<div class="btn-toolbar">
@@ -32,8 +33,23 @@
 							</div>
 						</div>
 					</div>
-					{% endif %}
+					<h2>Obtener y enviar token al dispositivo</h2>
+					<div class="row t10">
+						<div class="col-lg-12">
+							<div class="btn-toolbar">
+								<div class="btn-group">
+									<a href="{% url 'tokenDispositivo' GrupoDispositivo.id Dispositivo.id %}"><button type="button" class="btn btn-default">
+										 ENVIAR TOKEN
+									</button></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row t10">
+					<h2>	{{Dispositivo.datos}} </h2>
+					</div>
 				</div>
+				{% endif %}
 			</div>
 
 			<footer>
@@ -41,7 +57,9 @@
 					<div class="col-lg-12 text-center">
 						IoT device management service
 						<div class="abajo">
-							<button type="button" class="btn btn-default" onClick="javascript:history.go(-1);"/>Atrás
+							{% if GrupoDispositivo %}
+							<a href="{% url 'indexGrupoDispositivo' GrupoDispositivo.id %}"><button type="button" class="btn btn-default"/>Atrás
+							{% endif %}
 						</div>
 						<div class="abajo">
 							<a href="{% url 'logout' %}" style="color:#ffffff"><button type="button" class="btn btn-default"/>Logout</a>

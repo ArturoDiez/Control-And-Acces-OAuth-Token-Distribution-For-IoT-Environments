@@ -26,3 +26,6 @@ class DispositivoForm(forms.Form):
            attrs={'class' : 'form-control', 'placeholder' : 'Descripcion del Dispositivo', 'aria-label' : 'Dispositivo', 'aria-describedby' : 'add-btn'}))
     grupo = forms.CharField(widget=forms.HiddenInput())
     propietario = forms.CharField(widget=forms.HiddenInput())
+    token = forms.CharField(widget=forms.HiddenInput())
+    link = forms.CharField(widget=forms.HiddenInput())
+    datos = forms.CharField(widget=forms.HiddenInput())

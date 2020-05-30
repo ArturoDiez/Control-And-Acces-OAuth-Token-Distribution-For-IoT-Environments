@@ -13,4 +13,6 @@ urlpatterns = [
     path('<GrupoDispositivo_id>/deleteGrupo/', views.deleteGrupo, name='deleteGrupo'),
     path('<GrupoDispositivo_id>/<Dispositivo_id>/', views.indexDispositivo, name='indexDispositivo'),
     path('<GrupoDispositivo_id>/<Dispositivo_id>/deleteDispositivo/', views.deleteDispositivo, name='deleteDispositivo'),
+    path('<GrupoDispositivo_id>/<Dispositivo_id>/tokenDispositivo/', views.tokenDispositivo, name='tokenDispositivo'),
+    path('<GrupoDispositivo_id>/<Dispositivo_id>/recibirDatos', views.recibirDatos, name='recibirDatos'),
 ]

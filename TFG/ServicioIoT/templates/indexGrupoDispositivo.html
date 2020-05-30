@@ -39,7 +39,7 @@
 
 					<ul class="list-group t20">
 						{% for Dispositivo in Dispositivo_list %}
-						   {% if GrupoDispositivo.id == Dispositivo.grupo.id %}
+						   {% if GrupoDispositivo.id == Dispositivo.grupo.id and Dispositivo.propietario == request.user %}
 							 <li class="list-group-item"><a href="{% url 'indexDispositivo' GrupoDispositivo.id Dispositivo.id  %}">{{ Dispositivo.nombre }}</a></li>
 							 {% endif %}
 						{% endfor %}
@@ -67,7 +67,7 @@
 					<div class="col-lg-12 text-center">
 						IoT device management service
 						<div class="abajo">
-							<button type="button" class="btn btn-default" onClick="javascript:history.go(-1);"/>Atrás
+							<a href="{% url 'index' %}"><button type="button" class="btn btn-default"/>Atrás
 						</div>
 						<div class="abajo">
 							<a href="{% url 'logout' %}" style="color:#ffffff"><button type="button" class="btn btn-default"/>Logout</a>

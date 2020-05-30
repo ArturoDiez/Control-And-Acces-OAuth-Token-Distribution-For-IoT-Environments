@@ -8,8 +8,15 @@ from oauthlib.oauth2 import WebApplicationClient
 from django.views.decorators.http import require_POST
 from .forms import GrupoDispositivoForm, DispositivoForm, extraDataForm
 from django.http import HttpResponse, HttpRequest
-import requests
 from requests_oauthlib import OAuth2Session
+from django.views.decorators.csrf import csrf_exempt
+import requests
+import json
+import Cryptodome
+import base64
+from Cryptodome.PublicKey import RSA
+from Cryptodome.Cipher import PKCS1_OAEP
+from base64 import b64decode
 
 oauth = OAuth()
 

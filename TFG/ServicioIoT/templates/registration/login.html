@@ -71,7 +71,7 @@ input[type=submit]:hover {
 <div class="division2">
   {% if user.is_authenticated %}
     Hi {{ user.username }}!
-    <p><a href="/api">Go to the Api</a></p>
+    <p><a href="/app">Go to the Api</a></p>
     <p><a href="{% url 'logout' %}">Logout</a></p>
   {% else %}
   {% endif %}

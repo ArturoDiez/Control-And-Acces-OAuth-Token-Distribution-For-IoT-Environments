@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+{%csrf_token%}
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>IoTs</title>
+
+		<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="{% static 'todo/bs/css/flatly.min.css' %}" />
+		<link rel="stylesheet" href="{% static 'todo/styles.css' %}" />
+	</head>
+	<body>
+
+		<div class="container-fluid" id="wrapper">
+
+			<div class="container-fluid" id="wrapper">
+				<div class="row">
+					<div class="col-lg-4 col-lg-offset-4" id="content">
+						<h2>Enviar datos</h2>
+						<div class="row t10">
+							<div class="col-lg-12">
+								<div class="btn-toolbar">
+									<div class="btn-group">
+										<form action="{% url 'sendData' %}" method="POST" role="form">
+											<button type="submit" class="btn btn-default">
+									 		Enviar
+										</button>
+										</form>
+									</div>
+								</div>
+								{% if Dispositivo %}
+								<h2>{{Dispositivo.datos}}</h2>
+								<div>
+								<h2>{{Dispositivo.estado_token}}</h2>
+								</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+	</body>
+</html>
