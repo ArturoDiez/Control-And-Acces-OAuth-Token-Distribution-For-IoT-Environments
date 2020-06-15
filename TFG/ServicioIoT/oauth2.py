@@ -29,8 +29,6 @@ def pedirCode(request):
     usuario = extraData.objects.get(userid=user_now.id)
 
     #Pasando datos al server para recibir el codigo
-    #s = OAuth2Session(client_id=usuario.client_id, redirect_uri='http://127.0.0.1:8000/app/callback', scope='read')
-    #auth_url, state = s.authorization_url('http://localhost:8080/web/authorize?')
     parametros = {'response_type':'code','client_id':usuario.client_id,'redirect_uri': 'http://127.0.0.1:8000/app/callback','scope':'read'}
     r = requests.post('http://localhost:8080/web/authorize?', params = parametros)
 
@@ -50,19 +48,14 @@ def callback(request):
 
     if code != '':
 
-        print(code)
+        #print(code)
         usuario.code = code
         usuario.save()
 
         s = OAuth2Session(client_id=c_id,redirect_uri='http://127.0.0.1:8000/app/callback', scope='read')
         token = s.fetch_token(token_url='http://localhost:8080/v1/oauth/tokens?', client_secret=c_s,authorization_response=request.build_absolute_uri())
-        #parametros = {'&grant_type=authorization_code&code'+code+'=&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapp%2Fcallback'}
-        #url = 'http://localhost:8080/v1/oauth/tokens?&grant_type=authorization_code&code'+code+'=&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapp%2Fcallback'
-        #r = requests.post(url, auth = auth)
 
-        #token = request.GET.get('token','')
-
-    print(token)
+    #print(token)
 
     usuario.token = token['access_token']
     usuario.save()

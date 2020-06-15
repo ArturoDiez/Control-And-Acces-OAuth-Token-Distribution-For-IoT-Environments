@@ -16,15 +16,6 @@ class extraData (models.Model):
     code = models.CharField(max_length=100, unique = True)
     token = models.CharField(max_length=100, unique = True)
 
-    #@receiver(post_save, sender=User)
-    #def create_user_extradata(sender, instance, created, **kwargs):
-        #if created:
-            #extraData.objects.create(user=instance)
-
-        #@receiver(post_save, sender=User)
-        #def save_user_extradata(sender, instance, **kwargs):
-        #    instance.extraData.save()
-
     def __str__(self):
         return self.client_id
 

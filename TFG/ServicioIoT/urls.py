@@ -3,8 +3,6 @@ from . import views, oauth2
 
 urlpatterns = [
     path('', views.index, name='index'),
-    #path('extraData',oauth2.extraData, name='extraData'),
-    #path('extraData/addExtraData/', oauth2.addExtraData, name='addExtraData'),
     path('callback', oauth2.callback, name='callback'),
     path('pedirCode', oauth2.pedirCode, name='pedirCode'),
     path('addGrupoDispositivo/', views.addGrupoDispositivo, name='addGrupoDispositivo'),

@@ -2,9 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
-#from rest_framework import viewsets, renderers
 from .models import Dispositivo, GrupoDispositivo, extraData
-#from .serializers import DispositivoSerializer, GrupoDispositivoSerializer
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from .forms import GrupoDispositivoForm, DispositivoForm, extraDataForm
@@ -18,6 +16,7 @@ from Cryptodome.Cipher import PKCS1_OAEP, AES
 from base64 import b64decode
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
+import time
 
 
 
@@ -62,8 +61,6 @@ def addDispositivo(request, GrupoDispositivo_id):
 
     username = request.user
 
-    RSAkey = RSA.generate(1024)
-
     Gp = GrupoDispositivo.objects.get(pk=GrupoDispositivo_id)
     new_dispositivo.nombre = request.POST['nombre']
     new_dispositivo.descripcion = request.POST['descripcion']
@@ -71,13 +68,15 @@ def addDispositivo(request, GrupoDispositivo_id):
     new_dispositivo.grupo = Gp
     new_dispositivo.save()
 
+    RSAkey = RSA.generate(2048)
+
     public_key = RSAkey.publickey().export_key()
     file_out = open("receiver{id}.pem".format(id=new_dispositivo.id),"wb")
     file_out.write(public_key)
     file_out.close()
-    file_out_2 = open("private{id}.pem".format(id=new_dispositivo.id),"wb")
-    file_out2.write(RSAkey.export_key)
-    file_out2.close()
+    file_out = open("private{id}.pem".format(id=new_dispositivo.id),"wb")
+    file_out.write(RSAkey.export_key())
+    file_out.close()
 
     return redirect('indexGrupoDispositivo', GrupoDispositivo_id)
 
@@ -155,9 +154,9 @@ def recibirDatos(request, Dispositivo_id, GrupoDispositivo_id):
     auth= (usuario.client_id,usuario.client_secret)
     params= {'token': token, 'token_type_hint':'access_token'}
     r = requests.post('http://localhost:8080/v1/oauth/introspect',params= params, auth=auth)
-    print(r.status_code)
+    #print(r.status_code)
     f = r.json()
-    print(f)
+    #print(f)
 
     #Se hace por statu_code ya que solo da un 200 cuando el token está activo
     if r.status_code == 200:
@@ -169,7 +168,7 @@ def recibirDatos(request, Dispositivo_id, GrupoDispositivo_id):
         texto = plaintext.decode('utf-8')
         Dp.datos= texto
         Dp.save()
-        print(texto)
+        #print(texto)
 
         #Mandarle al dispositivo que todo bien
         requests.post(Dp.link+'estadoToken',data={'token':'Token activo'})
@@ -192,11 +191,3 @@ def pad(s):
 def unpad(s):
     l = s.count('{')
     return s[:len(s)-l]
-
-#class DispositivoView(LoginRequiredMixin,View):
-#    queryset = Dispositivo.objects.all()
-#    serializer_class = DispositivoSerializer
-
-#class GrupoDispositivoView(LoginRequiredMixin,View):
-#    queryset = GrupoDispositivo.objects.all()
-#    serializer_class = GrupoDispositivoSerializer

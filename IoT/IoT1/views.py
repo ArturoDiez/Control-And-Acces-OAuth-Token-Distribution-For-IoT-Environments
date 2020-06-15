@@ -28,17 +28,14 @@ def getToken(request):
     token = request.POST.get('token')
     disp = Dispositivo.objects.get(pk=1)
 
-    privk = RSA.import_key(open('private.pem').read())
+    privk = RSA.import_key(open('private29.pem').read())
     cipher_rsa= PKCS1_OAEP.new(privk)
 
+    #Si no se decodifica y se codifica al enviar, no serán 128 bytes y no se podrá desencriptar
     t = token.encode('latin-1')
 
     length=len(t)
 
-    print(t)
-    print(length)
-
-    #t = pad(token)
     c = cipher_rsa.decrypt(t)
     tok = c.decode('utf-8')
 
@@ -55,7 +52,7 @@ def sendData(request):
     us_token = t.encode('utf-8')
     data = disp.datos.encode('utf-8')
 
-    recipient_key = RSA.import_key(open('receiver25.pem').read())
+    recipient_key = RSA.import_key(open('receiver29.pem').read())
 
     cipher_rsa = PKCS1_OAEP.new(recipient_key)
     enc_token_key = cipher_rsa.encrypt(us_token)
@@ -67,11 +64,11 @@ def sendData(request):
     json_k = ['nonce','enc_token_key','ciphertext','tag']
     json_v = [b64encode(x).decode('utf-8') for x in (nonce, enc_token_key, ciphertext, tag)]
     result = json.dumps(dict(zip(json_k,json_v)))
-    print(result)
+    #print(result)
 
-    datos = {'data': result, 'Dispositivo_id': '25', 'GrupoDispositivo_id': '23'}
+    datos = {'data': result, 'Dispositivo_id': '29', 'GrupoDispositivo_id': '23'}
 
-    r = requests.post('http://127.0.0.1:8000/app/23/25/recibirDatos', data = datos)
+    r = requests.post('http://127.0.0.1:8000/app/23/29/recibirDatos', data = datos)
 
     return redirect('index')
 
@@ -81,7 +78,7 @@ def pad(s):
 def estadoToken(request):
     disp = Dispositivo.objects.get(pk=1)
     estado = request.POST.get('token')
-    print(estado)
+    #print(estado)
     disp.estado_token = estado
     disp.save()
 
