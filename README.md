@@ -1,8 +1,10 @@
-TFG-SR
-Servidor de recursos del TFG de Arturo Díez
+# Control And Acces Token Distribution For IoT Environments
+Hi, my name is Arturo Díez and this is the resources server from my TFG for my Bachelor of Engineering in Telecommunication Technologies and Services Engineering
 
-Requiere instalar requests y pycryptodomex
+# Requirements
+Requires installing requests y pycryptodomex
 
-Utilizar junto al Servidor de Autenticación https://github.com/RichardKnop/go-oauth2-server
+Use together with the authentication server https://github.com/RichardKnop/go-oauth2-server
 
+# Observations
 (Con respecto a la base de datos crear un scope con nombre "read", y fijarse en https://github.com/RichardKnop/go-oauth2-server/tree/master/oauth/fixtures para crear los objetos de la base de datos, poniendo atención en que la "password" del "oauth_user" y el "secret" de "oauth_client" deben guardarse encriptados para su correcto funcionamiento.)
